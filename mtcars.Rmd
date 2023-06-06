@@ -48,8 +48,9 @@ autos |>
   select(mpg,hp,wt)
 
 ```
-8. Calcule el promedio de las millas por galón (mpg), la potencia (hp) y el peso (wt) para este conjunto de datos
 
+
+8. Calcule el promedio de las millas por galón (mpg), la potencia (hp) y el peso (wt) para este conjunto de datos
 
 a. Galón (mpg)
 Promedio: 20.09062
@@ -57,6 +58,7 @@ Promedio: 20.09062
 datos_mpg<-autos|> 
   select(mpg)
 ```
+
 ```{r}
 datos_mpg[[1]]
 mean(datos_mpg[[1]])
@@ -68,7 +70,6 @@ Promedio:146.6875
 datos_hp<-autos|> 
   select(hp)
 ```
-
 
 ```{r}
 datos_hp[[1]]
@@ -82,7 +83,6 @@ Promedio:3.21725
 datos_wt<-autos|> 
   select(wt)
 ```
-
 
 ```{r}
 datos_wt[[1]]
