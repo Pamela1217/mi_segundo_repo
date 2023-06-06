@@ -29,7 +29,7 @@ autos<-datasets::mtcars
 5. Filtre el objeto autos para obtener solo los automóviles que tienen más de 100 caballos de fuerza (hp).
 
 ```{r}
-autos |> 
+autos_mas_100<-autos |> 
   filter(hp>100)
 ```
 
@@ -37,7 +37,7 @@ autos |>
 6. Ordene dichos automóviles de forma descendente según la potencia (hp).
 
 ```{r}
-autos |> 
+autos_mas_100 |> 
   arrange(desc(hp))
 ```
 
