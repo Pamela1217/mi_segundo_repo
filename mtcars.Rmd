@@ -1,0 +1,98 @@
+---
+title: "Resolver ejercicio con mtcars"
+author: "Sandra López Torres"
+date: "2023-05-06"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(datasets)
+```
+
+En este ejercicio, trabajaremos con el conjunto de datos mtcars de la librería datasets. Este conjunto de datos contiene información sobre diferentes modelos de automóviles y sus características. 
+
+1. Cree un tiquete en su repositorio que diga “Resolver ejercicio con mtcars”. 
+2. Cree una rama respectiva en su RStudio para resolver esta tarea. 
+3. Cree un Rmarkdown y cargue las librerías datasets y dplyr. 
+4. Cree un objeto de R donde llame el conjunto de datos mtcars de la librería 
+
+
+```{r}
+autos<-datasets::mtcars
+```
+
+
+5. Filtre el objeto autos para obtener solo los automóviles que tienen más de 100 caballos de fuerza (hp).
+
+```{r}
+autos |> 
+  filter(hp>100)
+```
+
+
+6. Ordene dichos automóviles de forma descendente según la potencia (hp).
+
+```{r}
+autos |> 
+  arrange(desc(hp))
+```
+
+7. Seleccione únicamente las columnas mpg, hp y wt. 
+
+```{r}
+autos |> 
+  select(mpg,hp,wt)
+
+```
+8. Calcule el promedio de las millas por galón (mpg), la potencia (hp) y el peso (wt) para este conjunto de datos
+
+
+a. Galón (mpg)
+Promedio: 20.09062
+```{r}
+datos_mpg<-autos|> 
+  select(mpg)
+```
+```{r}
+datos_mpg[[1]]
+mean(datos_mpg[[1]])
+```
+
+b. Potencia (hp)
+Promedio:146.6875
+```{r}
+datos_hp<-autos|> 
+  select(hp)
+```
+
+
+```{r}
+datos_hp[[1]]
+mean(datos_hp[[1]])
+```
+
+
+c. Peso (wt) 
+Promedio:3.21725
+```{r}
+datos_wt<-autos|> 
+  select(wt)
+```
+
+
+```{r}
+datos_wt[[1]]
+mean(datos_wt[[1]])
+```
+
+
+
+
+
+
+
+
