@@ -46,7 +46,6 @@ autos_mas_100 |>
 ```{r}
 autos |> 
   select(mpg,hp,wt)
-
 ```
 
 
