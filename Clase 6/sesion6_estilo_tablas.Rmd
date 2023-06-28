@@ -274,8 +274,8 @@ Títulos y subtítulos
  datos_aire<- datos_aire |> 
   gt() |> 
    tab_header(
-    title = "New York Air Quality Measurements",
-    subtitle = "Daily air quality measurements in New York, May to September 1973" # es opcional
+    title = "Mediciones de calidad de aire en New York en 1973",
+    subtitle = "Registro para las 10 temperaturas más altas registradas" # es opcional
   )
 datos_aire
 ```
