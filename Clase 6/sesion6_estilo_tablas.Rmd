@@ -260,6 +260,7 @@ datos_calidad_aire <- datasets::airquality
 ```
 
 b. Obtenga un cuadro con los 10 registros con las temperaturas reportadas más altas
+10 Temperaturas más altas
 ```{r}
 datos_aire <- datos_calidad_aire |> 
   arrange(desc(Temp)) |> 
@@ -268,6 +269,7 @@ datos_aire <- datos_calidad_aire |>
 
 c. Agregue títulos, subtítulos, fuente y pie de tabla al cuadro obtenido. Recuerde usar ?airquality para obtener información sobre el origen de los datos.
 
+Títulos y subtítulos
 ```{r}
  datos_aire<- datos_aire |> 
   gt() |> 
@@ -292,7 +294,6 @@ datos_aire
 ```
 
 Pie de tabla
-
 ```{r}
 datos_aire <- datos_aire |> 
   tab_footnote(
@@ -303,26 +304,46 @@ datos_aire
 ```
 
 
-d. Además, agrupelas columnas Ozone, Solar.R y Wind bajo un tab_spanner llamada "Mediciones", 
-y las columnas Temp, Month y Day bajo un tab_spanner llamado "Tiempo".
+d. Además, agrupelas columnas Ozone, Solar.R y Wind bajo un tab_spanner llamada "Mediciones", y las columnas Temp, Month y Day bajo un tab_spanner llamado "Tiempo".
 
+Agrupar
 ```{r}
 datos_aire <- datos_aire |> 
   tab_spanner(
     label = "Mediciones",
-    columns = c(Ozone, Solar.R,Wind)
+    columns = c(Ozone, Solar.R,Wind,Temp)
   ) |>
   tab_spanner(
     label = "Tiempo",
-    columns = c(Temp, Month,Day)
+    columns = c(Month,Day)
   )
 datos_aire
 ```
 
 
+e. Renombre las columnas para que estén en español y coloque colores a su gusto a la columna Temperatura.
 
+Renombrar columnas a español
+```{r}
+datos_aire <- datos_aire |> 
+  cols_label(
+    Ozone = "Ozono",
+    Solar.R = "Radiación solar",
+    Wind = "Viento",
+    Temp= "Temperatura",
+    Month="Mes",
+    Day="Día"
+  )
+datos_aire
+```
 
-
-e. Renombre las columnas para que estén en español y coloque colores a su gusto a 
-la columna Temperatura.
+Paleta de colores
+```{r}
+datos_aire <- datos_aire |> 
+  data_color(
+    columns =  Temp,
+    palette = c("red", "purple","pink")
+  )
+datos_aire
+```
 
