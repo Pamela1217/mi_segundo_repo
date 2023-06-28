@@ -269,15 +269,38 @@ datos_aire <- datos_calidad_aire |>
 c. Agregue títulos, subtítulos, fuente y pie de tabla al cuadro obtenido. Recuerde usar ?airquality para obtener información sobre el origen de los datos.
 
 ```{r}
- <- datos_calidad_aire |> 
+ datos_aire<- datos_aire |> 
   gt() |> 
    tab_header(
-    title = "Grandes masas terrestres del mundo",
-    subtitle = "Se presentan las 10 más grandes" # es opcional
+    title = "New York Air Quality Measurements",
+    subtitle = "Daily air quality measurements in New York, May to September 1973" # es opcional
   )
+datos_aire
 ```
 
+Fuente
+```{r}
+datos_aire<- datos_aire |> 
+  tab_source_note(
+    source_note = "Fuente: The data were obtained from the New York State Department of Conservation (ozone data) and the National Weather Service (meteorological data)"
+  ) |> 
+  tab_source_note(
+    source_note = "Chambers, J. M., Cleveland, W. S., Kleiner, B. and Tukey, P. A. (1983) Graphical Methods for Data Analysis. Belmont, CA: Wadsworth"
+  )
 
+datos_aire
+```
+
+Pie de tabla
+
+```{r}
+datos_aire <- datos_aire |> 
+  tab_footnote(
+    footnote = "Temperatura más alta",
+    locations = cells_body(columns = Temp, rows = 1)
+  )
+datos_aire
+```
 
 
 d. Además, agrupelas columnas Ozone, Solar.R y Wind bajo un tab_spanner llamada "Mediciones", 
