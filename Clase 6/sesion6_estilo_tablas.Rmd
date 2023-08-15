@@ -1,0 +1,349 @@
+---
+title: "sesion6_formato_tablas"
+author: "Kimberley Isabel Orozco Cornejo"
+date: "2023-06-27"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(gt)
+library(datasets)
+```
+
+## Uso del paquete gt para estilo de cuadros.
+
+Cuando comunicamos nuestros resultados, es importante que tengamos en cuenta
+el formato de los cuadros que estamos generando. Existen varios paquetes de R
+que nos pueden ayudar a estilizar nuestras tablas, por ejemplo:
+
+- gt
+- DT
+- kableExtra
+- flextable
+
+En esta clase aprenderemos cómo trabajar con gt.
+
+Primero, vamos a crear un dataframe a partir del dataset islands de la librería
+datasets.
+```{r}
+df_islas <- tibble(
+    nombre = names(islands),
+    tamano = islands
+  )
+```
+
+De este dataframe, vamos a extraer las 10 masas terrestres más grandes del mundo 
+y crear una nueva columna que indique si la masa es un Continente, un país o una
+subregión:
+
+```{r}
+# Cargar datos
+datos_islas <- df_islas |> 
+  arrange(desc(tamano)) |> 
+  head(10) |> 
+  mutate(tipo = c("Continente", "Continente", "Continente", "Continente", "Continente", 
+                  "Continente", "País", "País", "Subregión", "Subregión"))
+```
+
+Así se ve este dataframe sin hacerle ningún formato:
+
+```{r}
+datos_islas
+```
+
+Para mejorar el formato de este dataframe con la librería gt, primero convertimos
+el df a un objeto gt como se muestra a continuación:
+
+```{r}
+islas_gt <- datos_islas |> 
+  gt()
+```
+
+Observe que hemos transformado el dataframe en un objeto que parece una lista, como
+aparece en nuestro entorno. Visualicemos cómo queda hasta este momento:
+
+```{r}
+islas_gt
+```
+
+No está mal pero queda muy básico. Con gt podemos añadirle varias partes a nuestra
+tabla, como títulos, subtítulos, notas al piel, referencias y más.
+
+## Agregar títulos y subtítulos
+
+La forma en que agregamos partes como el encabezado de la tabla y las notas al pie 
+en el pie de tabla es utilizando la familia de funciones tab_*(). Es fácil agregar 
+un encabezado de tabla, así que veamos cómo se ve la tabla anterior con un título 
+y un subtítulo. Podemos agregar esta parte usando la función tab_header().
+
+```{r}
+islas_gt <- datos_islas |> 
+  gt() |> 
+   tab_header(
+    title = "Grandes masas terrestres del mundo",
+    subtitle = "Se presentan las 10 más grandes" # es opcional
+  )
+```
+
+Veamos cómo se ve la tabla con el título y subtítulo:
+
+```{r}
+islas_gt
+```
+
+## Mover posición de columnas y ajustar sus nombres
+
+Suponga que deseamos reacomodar las columnas de nuestra tabla. Podemos hacerlo 
+antes de convertir el dataframe en un objeto gt (usando la función relocate de dplyr), 
+o podemos hacerlo directamente con gt:
+
+```{r}
+islas_gt <- islas_gt |> 
+  cols_move_to_start(
+    columns = c(nombre, tipo, tamano)
+  ) 
+
+islas_gt
+```
+
+## Añadir tab_spanners
+
+Los tabs spanner sirven para agrupar varias columnas en grupos. Esto no siempre es 
+necesario pero en algunos casos puede ayudarnos a mejorar la presentación de la 
+información. Se crean con la función tab_spanner:
+
+```{r}
+islas_gt <- islas_gt |> 
+  tab_spanner(
+    label = "Información política",
+    columns = c(nombre, tipo)
+  ) |>
+  tab_spanner(
+    label = "Información geográfica",
+    columns = c(tamano)
+  )
+```
+
+## Añadir Nota de Origen y pie de tabla (source_note)
+
+Se puede agregar una nota de origen al pie de página de la tabla mediante el uso 
+de la función tab_source_note(). La idea es que esto nos permite indicar la fuente
+de nuestros datos. Funciona de la misma manera que tab_header() 
+(también permite entradas de Markdown), excepto que se puede llamar varias veces: 
+cada invocación da como resultado la adición de una nota de origen.
+
+```{r}
+
+islas_gt <- islas_gt |> 
+  tab_source_note(
+    source_note = "Fuente: The World Almanac and Book of Facts, 1975, page 406."
+  ) |> 
+  tab_source_note(
+    source_note = "McNeil, D. R. (1977) Interactive Data Analysis. Wiley."
+  )
+
+# Para ver el resultado:
+islas_gt
+```
+
+Las notas al pie se encuentran dentro de la parte del Pie de tabla y sus marcas de referencia están adjuntas a los datos de las celdas. Las notas al pie se agregan con la función tab_footnote().
+
+Dependiendo de dónde queremos añadir el pie de página, deberemos usar una función
+distinta para indicar el location de ese pie. 
+
+Aquí tenemos un ejemplo sencillo de cómo se pueden agregar notas al pie a una celda 
+de tabla. Añadamos una nota al pie que haga referencia a las celdas de América del 
+Norte y América del Sur en la columna de nombres:
+
+```{r}
+islas_gt <- islas_gt |> 
+  tab_footnote(
+    footnote = "Las Américas", # es lo que va a decir el pie de tabla
+    locations = cells_body(columns = nombre, rows = 3:4) # acá indicamos la referencia al pie de tabla
+  )
+```
+Ejercicio 
+Añadir nota para la observación 16988 que diga "El tamaño más grande"
+
+```{r}
+islas_gt <- islas_gt |> 
+  tab_footnote(
+    footnote = "El tamaño más grande",
+    locations = cells_body(columns = tamano, rows = 1)
+)
+```
+
+Veamos cómo se ve esto:
+
+```{r}
+islas_gt
+```
+
+Si queremos añadir una nota al pie directamente en el nombre de una columna, en locations usamos la función
+
+```{r}
+islas_gt <- islas_gt |>   
+  tab_footnote(
+    footnote = "Tamaño en miles de millas cuadradas", #lo que va a decir al pie de la tabla
+    locations = cells_column_labels(columns = tamano),#la referencia al pie
+    placement = "right"
+  )
+
+islas_gt
+```
+
+En resumen, en location usamos:
+
+- cells_body si la nota va dentro del cuerpo de la tabla
+- cells_column_labels si la nota va en el nombre de una columna
+
+Vea la ayuda de tab_footnote para más detalles.
+
+## Añadir colores
+
+Podemos hacer más cosas interesantes con gt. Por ejemplo, digamos que queremos
+añadir colores en la columna tamaño. Esto lo podemos hacer usando la función data_color.
+OJO: los colores pueden verse cuando se renderiza en docx o html, pero no en pdf.
+
+```{r}
+islas_gt <- islas_gt |> 
+  data_color(
+    columns = tamano,
+    palette = c("yellow", "orange", "navyblue")
+  )
+
+islas_gt
+```
+
+```{r}
+islas_gt <- islas_gt |> 
+  data_color(
+    columns = nombre,
+    palette = c("white")
+  )
+
+islas_gt
+```
+
+
+## Ajustar los nombres de las columnas:
+
+Podemos hacer esto con la función cols_label:
+
+```{r}
+islas_gt <- islas_gt |> 
+  cols_label(
+    nombre = "Nombre",
+    tipo = "Tipo",
+    tamano = "Area"
+  )
+
+islas_gt
+```
+
+
+Práctica en grupos
+
+Para los datos de airquality, realice lo siguiente:
+
+a. Cargue los datos
+
+```{r}
+datos_calidad_aire <- datasets::airquality
+```
+
+b. Obtenga un cuadro con los 10 registros con las temperaturas reportadas más altas
+10 Temperaturas más altas
+```{r}
+datos_aire <- datos_calidad_aire |> 
+  arrange(desc(Temp)) |> 
+  head(10)
+```
+
+c. Agregue títulos, subtítulos, fuente y pie de tabla al cuadro obtenido. Recuerde usar ?airquality para obtener información sobre el origen de los datos.
+
+Títulos y subtítulos
+```{r}
+ datos_aire<- datos_aire |> 
+  gt() |> 
+   tab_header(
+    title = "Mediciones de calidad de aire en New York en 1973",
+    subtitle = "Registro para las 10 temperaturas más altas registradas" # es opcional
+  )
+datos_aire
+```
+
+Fuente
+```{r}
+datos_aire<- datos_aire |> 
+  tab_source_note(
+    source_note = "Fuente: The data were obtained from the New York State Department of Conservation (ozone data) and the National Weather Service (meteorological data)"
+  ) |> 
+  tab_source_note(
+    source_note = "Chambers, J. M., Cleveland, W. S., Kleiner, B. and Tukey, P. A. (1983) Graphical Methods for Data Analysis. Belmont, CA: Wadsworth"
+  )
+
+datos_aire
+```
+
+Pie de tabla
+```{r}
+datos_aire <- datos_aire |> 
+  tab_footnote(
+    footnote = "Temperatura más alta",
+    locations = cells_body(columns = Temp, rows = 1)
+  )
+datos_aire
+```
+
+
+d. Además, agrupelas columnas Ozone, Solar.R y Wind bajo un tab_spanner llamada "Mediciones", y las columnas Temp, Month y Day bajo un tab_spanner llamado "Tiempo".
+
+Agrupar
+```{r}
+datos_aire <- datos_aire |> 
+  tab_spanner(
+    label = "Mediciones",
+    columns = c(Ozone, Solar.R,Wind,Temp)
+  ) |>
+  tab_spanner(
+    label = "Tiempo",
+    columns = c(Month,Day)
+  )
+datos_aire
+```
+
+
+e. Renombre las columnas para que estén en español y coloque colores a su gusto a la columna Temperatura.
+
+Renombrar columnas a español
+```{r}
+datos_aire <- datos_aire |> 
+  cols_label(
+    Ozone = "Ozono",
+    Solar.R = "Radiación solar",
+    Wind = "Viento",
+    Temp= "Temperatura",
+    Month="Mes",
+    Day="Día"
+  )
+datos_aire
+```
+
+Paleta de colores
+```{r}
+datos_aire <- datos_aire |> 
+  data_color(
+    columns =  Temp,
+    palette = c("red", "purple","pink")
+  )
+datos_aire
+```
+
