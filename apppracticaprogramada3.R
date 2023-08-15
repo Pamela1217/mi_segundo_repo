@@ -35,9 +35,10 @@ ui <- fluidPage(
     
         
     mainPanel(
-      h2("Vamos a planificar su día especial",style="color:blue",align="center"),
+      h2("Vamos a planificar su día especial!!",style="color:blue",align="center"),
       tags$hr(style="border-color:blue;"),
-      h4("Detalles del evento:"),
+      br(),
+      h4(strong("Detalles del evento:")),
       textOutput("detalles_evento1"),
       hr(),
       textOutput("detalles_evento2"),
